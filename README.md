@@ -1,38 +1,147 @@
-# Financial Document Analyzer - Debug Assignment
+# Financial Document Analyzer - VWO AI Internship Debug Challenge
 
 ## Project Overview
-A comprehensive financial document analysis system that processes corporate reports, financial statements, and investment documents using AI-powered analysis agents.
+This repository contains the debugged and fully functional solution for the VWO Generative AI Internship Debug Challenge. The project is an AI-powered application that uses a crew of agents, built with CrewAI, to analyze uploaded financial documents (PDFs) and provide a comprehensive report.
 
-## Getting Started
+The system is designed with a satirical twist: the AI agents have humorous, over-the-top personas, leading to intentionally dramatic and unreliable financial analysis, risk assessment, and investment recommendations. The entire application is served via a FastAPI backend.
 
-### Install Required Libraries
-```sh
-pip install -r requirement.txt
-```
+## Bugs Found and Fixes Implemented
+The original codebase was non-functional due to several deterministic bugs and inefficient agent prompts. Both categories of issues have been resolved.
 
-### Sample Document
-The system analyzes financial documents like Tesla's Q2 2025 financial update.
+### 1. Deterministic Bugs (Code & Environment)
+Python Version Incompatibility:
 
-**To add Tesla's financial document:**
-1. Download the Tesla Q2 2025 update from: https://www.tesla.com/sites/default/files/downloads/TSLA-Q2-2025-Update.pdf
-2. Save it as `data/sample.pdf` in the project directory
-3. Or upload any financial PDF through the API endpoint
+Bug: The application failed to install dependencies because the specified library versions required Python >3.10 and <=3.13.0. The development environment was using Python 3.13.1, which was too new.
 
-**Note:** Current `data/sample.pdf` is a placeholder - replace with actual Tesla financial document for proper testing.
+Fix: The project was standardized to use Python 3.11, a stable and widely supported version. The setup instructions now reflect this requirement.
 
-# You're All Not Set!
-🐛 **Debug Mode Activated!** The project has bugs waiting to be squashed - your mission is to fix them and bring it to life.
+Missing & Incorrect Dependencies:
 
-## Debugging Instructions
+Bug: The requirements.txt file was missing crucial libraries (python-dotenv, pypdf, langchain-google-genai) and contained a version of crewai-tools (0.2.0) with a known internal bug.
 
-1. **Identify the Bug**: Carefully read the code in each file and understand the expected behavior. There is a bug in each line of code. So be careful.
-2. **Fix the Bug**: Implement the necessary changes to fix the bug.
-3. **Test the Fix**: Run the project and verify that the bug is resolved.
-4. **Repeat**: Continue this process until all bugs are fixed.
+Fix: The requirements.txt file was rebuilt with all necessary libraries and updated to stable, compatible versions, including crewai-tools==0.3.0.
 
-## Expected Features
-- Upload financial documents (PDF format)
-- AI-powered financial analysis
-- Investment recommendations
-- Risk assessment
-- Market insights
+Uninitialized Language Model (LLM):
+
+Bug: The agents.py file contained llm = llm, a recursive definition that fails at runtime.
+
+Fix: Corrected the code to properly import ChatGoogleGenerativeAI and instantiate it with an API key loaded from the .env file.
+
+Virtual Environment Misconfiguration:
+
+Bug: The application repeatedly failed with ModuleNotFoundError because the terminal running the uvicorn command did not have the virtual environment activated, thus using the global Python interpreter.
+
+Fix: Added clear instructions on the importance of activating the virtual environment (venv) before installing dependencies or running the application.
+
+### 3. Broken PDF Reading Tool:
+
+Bug: The tools.py file used an undefined Pdf class, causing a NameError.
+
+Fix: The tool was rewritten as a proper CrewAI tool using the @tool decorator and the pypdf library to correctly extract text from PDFs.
+
+Incomplete Agent Crew:
+
+Bug: main.py was hardcoded to use only a single agent and task, ignoring the other defined agents.
+
+Fix: The run_crew function was updated to assemble the full crew of four agents and chain their tasks sequentially using the context parameter for a logical workflow.
+
+### 2. Inefficient Prompts (Agent & Task Design)
+Static Agent Goals:
+
+Bug: An agent's static goal property contained a dynamic variable ({query}).
+
+Fix: Agent goals were rewritten to be static, role-based objectives. All dynamic information (like the user's query) was moved into the Task descriptions, following the correct CrewAI pattern.
+
+Hardcoded File Path:
+
+Bug: The document analysis was hardcoded to a single file (data/sample.pdf).
+
+Fix: The system was re-engineered to dynamically pass the path of the user-uploaded file into the crew's kickoff dictionary, allowing for the analysis of any submitted PDF.
+
+# Setup and Installation
+Follow these steps to get the project running locally.
+
+Bash
+
+git clone <your-github-repo-link>
+cd <repository-name>
+Install Python 3.11
+Ensure you have a compatible Python version. You can download it from the official Python website.
+
+Create and Activate Virtual Environment
+
+Bash
+
+# Create the virtual environment
+python -m venv venv
+
+# Activate on Windows PowerShell
+.\venv\Scripts\activate
+Install Dependencies
+
+Bash
+
+pip install -r requirements.txt
+Set Up Environment Variables
+Create a file named .env in the project's root directory and add your API keys.
+
+GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"
+SERPER_API_KEY="YOUR_SERPER_API_KEY"
+
+# How to Run the Application
+With your virtual environment activated, start the FastAPI server using the following command:
+
+Bash
+
+uvicorn main:app --reload
+The server will be live and accessible at http://127.0.0.1:8000.
+
+Usage Instructions (Handling the API)
+The application API is best tested using the interactive documentation automatically generated by FastAPI (Swagger UI).
+
+Navigate to the Interactive Docs:
+Once the server is running, open your web browser and go to:
+http://127.0.0.1:8000/docs
+
+Test the Endpoint:
+
+On the documentation page, you will see the /analyze endpoint. Click on it to expand.
+
+Click the "Try it out" button.
+
+Use the form to upload a PDF file and, optionally, enter a text query.
+
+Click the "Execute" button to send the request. The AI-generated analysis will be displayed in the response body.
+
+#  API Documentation
+Analyze Financial Document
+Endpoint: /analyze
+
+Method: POST
+
+Description: Uploads a financial document (PDF) and a text query to be processed by the AI agent crew.
+
+Request Body: multipart/form-data
+
+file (file, required): The financial document. Must be a PDF.
+
+query (string, optional): The user's query for the analysis.
+
+Success Response (200 OK):
+
+JSON
+
+{
+  "status": "success",
+  "query": "What are the key risks and investment opportunities?",
+  "analysis": "...",
+  "file_processed": "sample.pdf"
+}
+How the Response is Stored
+The application is configured to automatically save the final output of the analysis.
+
+In the task.py file, the final task (investment_analysis) uses CrewAI's output_file parameter.
+
+This instructs the crew to save the final agent's complete response to a file named investment_recommendation.md.
+
+This file is created in the project's root directory. With each new analysis, the content of this file is overwritten.
