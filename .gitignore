@@ -1,0 +1,105 @@
+# ===================================================================
+# Python Template
+# ===================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+# Usually these files are in a .spec file.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Foreign Function Interface (FFI)
+*.pyd
+
+# ===================================================================
+# Virtual Environment
+# ===================================================================
+# Exclude the virtual environment folder entirely
+venv/
+.venv/
+env/
+.env/
+ENV/
+.ENV/
+
+# ===================================================================
+# Editor & OS Specific
+# ===================================================================
+# VS Code
+.vscode/
+.history/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# ===================================================================
+# Secrets & Credentials
+# ===================================================================
+# Environment variables file
+.env
+
+# Other potential secret files
+*.log
+*.ini
+*.pem
+*.key
+
+# =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
+# Project-Specific Ignores
+# =_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=
+# Folder for temporary data/uploads
+data/
+
+# Specific output files
+investment_recommendation.md
